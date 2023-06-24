@@ -19,10 +19,10 @@ import {
   selectMaxHealth,
   selectTempHealth,
   selectCoins,
-  selectLocationID,
+  selectLocation,
 } from '../slices/playerSlice';
 
-import WorldManager from '../game/location-manager';
+import { getLocation } from '../game/location-manager';
 import { isLoading } from '../contexts/load-context';
 
 export default function HeaderBar() {
@@ -31,7 +31,7 @@ export default function HeaderBar() {
   const maxHealth = useAppSelector(selectMaxHealth);
   const tempHealth = useAppSelector(selectTempHealth);
   const coins = useAppSelector(selectCoins);
-  const locationID = useAppSelector(selectLocationID);
+  const location = useAppSelector(selectLocation);
 
   const theme = useContext(ThemeContext);
 
@@ -99,7 +99,7 @@ export default function HeaderBar() {
           paddingLeft: 3,
           paddingBottom: 1,
           color: RelativeColor.getTextColor(),
-        }}> {WorldManager.getLocation(locationID).location.name} </Text>
+        }}> {getLocation(location.current).location.name} </Text>
       </View>
     </View>
   );

@@ -11,11 +11,11 @@ import { getRandomElement, randomSeed } from '../math-utils';
 import { g_setLoading } from '../../../contexts/load-context';
 
 import { useAppSelector, useAppDispatch } from '../../../hooks';
-import { selectLocationID, setLocationID } from '../../../slices/playerSlice';
+import { selectLocation, setLocationID } from '../../../slices/playerSlice';
 
 export default function RenderMap() {
 
-  const playerLocationID = useAppSelector(selectLocationID);
+  const playerLocation = useAppSelector(selectLocation);
   const dispatch = useAppDispatch();
 
   const [loading, setLoading] = useState(false);
@@ -70,7 +70,7 @@ export default function RenderMap() {
           window.ReactNativeWebView.postMessage("READY-TO-INJECT;~;");
         }
 
-        document.body.style.backgroundColor='${backgroundColor}';true;
+        document.body.style.backgroundColor='${backgroundColor}';
         
         true;
       `);
@@ -83,6 +83,7 @@ export default function RenderMap() {
     const MessageType = {
       FINISH_LOAD: 'FINISH-LOAD',
       FINISH_GENERATE: 'FINISH-GENERATE',
+      FINISH_PLAYER_SET: 'FINISH-PLAYER-SET',
       LOG: 'LOG',
       WARN: 'WARN',
       READY_TO_INJECT: 'READY-TO-INJECT',
@@ -92,40 +93,58 @@ export default function RenderMap() {
     if (dParts[0] === MessageType.FINISH_GENERATE) {
       console.log('Finished generating!');
 
-      const worldData = JSON.parse(dParts[1]) as WorldData;
-      setSavedWorld(worldData);
+      try {
 
-      let newPlayerLocationID = getRandomElement(worldData.mapData.towns);
-      console.log('Location: ' + newPlayerLocationID);
-      dispatch(setLocationID(newPlayerLocationID));
+        console.log('got here -1');
 
-      webView.current.injectJavaScript(`
-        setPlayerData({
-          version: '1.0',
-          current_t_i: ${newPlayerLocationID},
-        });
-        true;
-      `);
+        const worldData = JSON.parse(dParts[1]) as WorldData;
 
-      loadingHandler(false);
+        console.log('got here 0');
+  
+        setSavedWorld(worldData);
+  
+        console.log('got here 1');
+  
+        let newPlayerLocationID = getRandomElement(worldData.mapData.towns);
+        console.log('Location: ' + newPlayerLocationID);
+        dispatch(setLocationID(newPlayerLocationID));
+  
+        webView.current.injectJavaScript(`
+          setPlayerData({
+            version: '1.0',
+            current_t_i: ${newPlayerLocationID},
+          });
+          true;
+        `);
+
+      } catch (e) {
+        console.warn('Failed to handle generated world data!');
+        console.log(e);
+      }
+
     } else if (dParts[0] === MessageType.FINISH_LOAD) {
       console.log('Finished loading!');
 
-      console.log('Location: ' + playerLocationID);
+      console.log('Location: ' + playerLocation.current);
 
       webView.current.injectJavaScript(`
         setPlayerData({
           version: '1.0',
-          current_t_i: ${playerLocationID},
+          current_t_i: ${playerLocation.current},
         });
         true;
       `);
-
-      loadingHandler(false);
+      
     } else if (dParts[0] === MessageType.LOG) {
       console.log('WebView > ' + dParts[1]);
     } else if (dParts[0] === MessageType.WARN) {
       console.warn('WebView > ' + dParts[1]);
+
+      if(dParts[1].includes('Script error')){
+        console.warn('Aborting world load.');
+        loadingHandler(false);
+      }
+
     } else if (dParts[0] === MessageType.READY_TO_INJECT) {
 
       let worldData = getSavedWorld();
@@ -137,6 +156,12 @@ export default function RenderMap() {
 
         true;
       `);
+
+    } else if (dParts[0] === MessageType.FINISH_PLAYER_SET) {
+      console.log('Player location set!');
+      console.log('Removing load screen');
+
+      loadingHandler(false);
 
     } else {
       console.warn('Unknown Webview Message: ' + data);

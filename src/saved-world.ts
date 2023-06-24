@@ -1,4 +1,5 @@
 import * as FileSystem from 'expo-file-system';
+import _ from 'lodash';
 
 const WORLD_DATA_FILE = 'world-data.data';
 
@@ -91,32 +92,32 @@ export function getSavedWorld() {
 export function setSavedWorld(data: WorldData) {
   cachedData = data;
 
-  (async () => {
-    try {
+  console.log('got here 0.1');
 
-      let storedData = JSON.parse(JSON.stringify(data));
+  try {
 
-      console.log('Pre Size: ' + JSON.stringify(storedData).length);
+    let storedData = _.cloneDeep(data);
 
-      saveImage(FOLIAGE_IMAGE_FILE, storedData.canvases.foliage);
-      saveImage(MARKERS_IMAGE_FILE, storedData.canvases.markers);
-      saveImage(HOVER1_IMAGE_FILE, storedData.canvases.hover1);
-      saveImage(HOVER2_IMAGE_FILE, storedData.canvases.hover2);
+    console.log('Pre Size: ' + JSON.stringify(storedData).length);
 
-      storedData.canvases.foliage = null;
-      storedData.canvases.markers = null;
-      storedData.canvases.hover1 = null;
-      storedData.canvases.hover2 = null;
+    saveImage(FOLIAGE_IMAGE_FILE, storedData.canvases.foliage);
+    saveImage(MARKERS_IMAGE_FILE, storedData.canvases.markers);
+    saveImage(HOVER1_IMAGE_FILE, storedData.canvases.hover1);
+    saveImage(HOVER2_IMAGE_FILE, storedData.canvases.hover2);
 
-      console.log('Post Size: ' + JSON.stringify(storedData).length);
+    storedData.canvases.foliage = '';
+    storedData.canvases.markers = '';
+    storedData.canvases.hover1 = '';
+    storedData.canvases.hover2 = '';
 
-      //await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(storedData));
-      await saveData(WORLD_DATA_FILE, JSON.stringify(storedData));
-    } catch (e) {
-      console.warn('Failed to save data to storage!');
-      console.log(e);
-    }
-  })();
+    console.log('Post Size: ' + JSON.stringify(storedData).length);
+
+    //await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(storedData));
+    saveData(WORLD_DATA_FILE, JSON.stringify(storedData));
+  } catch (e) {
+    console.warn('Failed to save data to storage!');
+    console.log(e);
+  }
 
 }
 

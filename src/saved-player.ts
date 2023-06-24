@@ -5,7 +5,9 @@ import {
   setMaxHealth,
   setTempHealth,
   setCoins,
+  
   setLocationID,
+  setEventID,
 } from './slices/playerSlice';
 
 const STORAGE_KEY = 'saved-player-data';
@@ -25,7 +27,9 @@ export async function loadFromPlayerStorage() {
       store.dispatch(setMaxHealth(10));
       store.dispatch(setTempHealth(0));
       store.dispatch(setCoins(0));
+
       store.dispatch(setLocationID(-1));
+      store.dispatch(setEventID(''));
 
     } else {
       // Existing values
@@ -36,7 +40,9 @@ export async function loadFromPlayerStorage() {
       store.dispatch(setMaxHealth(parsedResult.maxHealth));
       store.dispatch(setTempHealth(parsedResult.tempHealth));
       store.dispatch(setCoins(parsedResult.coins));
+
       store.dispatch(setLocationID(parsedResult.locationID));
+      store.dispatch(setEventID(parsedResult.eventID));
 
     }
 

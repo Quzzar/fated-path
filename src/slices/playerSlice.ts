@@ -7,7 +7,9 @@ export interface PlayerState {
   maxHealth: number,
   tempHealth: number,
   coins: number,
-  locationID: number,
+
+  location: {current: number, prev: number},
+  eventID: string,
 }
 
 // Define the initial state using that type
@@ -16,7 +18,9 @@ const initialState: PlayerState = {
   maxHealth: 0,
   tempHealth: 0,
   coins: 0,
-  locationID: -1,
+
+  location: { current: -1, prev: -1 },
+  eventID: '',
 }
 
 export const playerSlice = createSlice({
@@ -36,8 +40,13 @@ export const playerSlice = createSlice({
     setCoins: (state, action: PayloadAction<number>) => {
       state.coins = action.payload;
     },
+
     setLocationID: (state, action: PayloadAction<number>) => {
-      state.locationID = action.payload;
+      state.location.prev = state.location.current;
+      state.location.current = action.payload;
+    },
+    setEventID: (state, action: PayloadAction<string>) => {
+      state.eventID = action.payload;
     },
   }
 })
@@ -47,7 +56,9 @@ export const {
   setMaxHealth,
   setTempHealth,
   setCoins,
+  
   setLocationID,
+  setEventID,
 } = playerSlice.actions;
 
 // Other code such as selectors can use the imported `RootState` type
@@ -55,6 +66,8 @@ export const selectCurrentHealth = (state: RootState) => state.player.currentHea
 export const selectMaxHealth = (state: RootState) => state.player.maxHealth;
 export const selectTempHealth = (state: RootState) => state.player.tempHealth;
 export const selectCoins = (state: RootState) => state.player.coins;
-export const selectLocationID = (state: RootState) => state.player.locationID;
+
+export const selectLocation = (state: RootState) => state.player.location;
+export const selectEventID = (state: RootState) => state.player.eventID;
 
 export default playerSlice.reducer;
