@@ -1,11 +1,11 @@
-# Faded Path: A Roguelike Text-Based RPG App
+# Fated Path: A Roguelike Text-Based RPG App
 
 ## Overview
-Faded Path is an immersive text-based RPG that combines the thrill of roguelike elements with an expansive open world. Set in a dynamically generated realm, this game invites players to explore an ever-changing landscape filled with hidden treasures, formidable monsters, and mysterious dungeons.
+Fated Path is an immersive text-based RPG that combines the thrill of roguelike elements with an expansive open world. Set in a dynamically generated realm, this game invites players to explore an ever-changing landscape filled with hidden treasures, formidable monsters, and mysterious dungeons.
 
 ## Key Features
 
-- **Dynamic World:** Every journey in Faded Path offers a unique experience, thanks to a procedurally generated world map and storyline. Your path is never the same twice!
+- **Dynamic World:** Every journey in Fated Path offers a unique experience, thanks to a procedurally generated world map and storyline. Your path is never the same twice!
 
 - **Epic Quests and Storyline:** Follow intriguing storylines and undertake epic quests. Your choices shape the narrative and your journey in this unpredictable world.
 
@@ -23,7 +23,7 @@ The map lives in a separate repo ([Fated Path - Map Gen](https://github.com/Quzz
 This allows the game to generate a map and do a ton of heavy lifting without freezing up the app and causing it to crash.
 
 ## Development Status
-Faded Path is currently a work in progress. It's a long term project that I continue to come back to in my free time :)
+Fated Path is currently a work in progress. It's a long term project that I continue to come back to in my free time :)
 
 ## Images
 
